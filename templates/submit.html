@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Submit Claim - Fraud Auditor</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', sans-serif;
+            background-color: #f0f2f5;
+        }
+
+        header {
+            background-color: #3e7a91;
+            color: white;
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 24px;
+        }
+
+        nav a {
+            color: white;
+            margin-left: 20px;
+            font-size: 14px;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        nav a:hover {
+            text-decoration: underline;
+            color: #00ffee;
+        }
+
+        .content-wrapper {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        main {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 40px 20px 60px;
+            box-sizing: border-box;
+        }
+
+        h2 {
+            color: #2c3e50;
+            margin-bottom: 30px;
+        }
+
+        form {
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: 600px;
+        }
+
+        label {
+            display: block;
+            margin-top: 15px;
+            font-weight: bold;
+        }
+
+        input[type="text"],
+        input[type="number"],
+        select {
+            width: 100%;
+            padding: 10px;
+            margin-top: 5px;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+            font-size: 16px;
+        }
+
+        /* Styles for checkbox (hospitalized) */
+        input[type="checkbox"] {
+            width: auto; /* Override full width */
+            margin-left: 0; /* Adjust margin */
+            padding: 0; /* Remove padding */
+            margin-right: 10px; /* Space from label text */
+            vertical-align: middle; /* Align with text */
+        }
+        .checkbox-label {
+            display: inline-block; /* Make label text inline with checkbox */
+            margin-top: 15px; /* Keep top margin */
+            font-weight: bold;
+            line-height: 20px; /* Align text vertically */
+        }
+
+
+        button {
+            margin-top: 25px;
+            background-color: #3e7a91;
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 6px;
+            font-size: 18px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #2c3e50;
+        }
+
+        footer {
+            background-color: #2c3e50;
+            color: white;
+            text-align: center;
+            padding: 12px;
+            width: 100%;
+        }
+
+        footer a {
+            color: #00ffee;
+        }
+    </style>
+</head>
+<body>
+<header>
+    <h1>Fraud Auditor</h1>
+    <nav>
+        <a href="{% url 'home' %}">Home</a>
+        <a href="{% url 'view_status' %}">View Status</a>
+        <a href="{% url 'view_user_profile' %}">Profile</a>
+        <a href="{% url 'logout' %}">Logout</a>
+    </nav>
+</header>
+
+<div class="content-wrapper">
+    <main>
+        <h2>Enter Claim Details</h2>
+        <form method="POST">
+            {% csrf_token %}
+            <label for="claim_id">Claim ID</label>
+            <input type="text" name="claim_id" required value="{{ claim_data.claim_id|default:'' }}">
+
+            <label for="patient_id">Patient ID</label>
+            <input type="text" name="patient_id" required value="{{ claim_data.patient_id|default:'' }}">
+
+            <label for="provider_id">Provider ID</label>
+            <input type="text" name="provider_id" required value="{{ claim_data.provider_id|default:'' }}">
+
+            <label for="claim_amount">Claim Amount (Billed Amount)</label>
+            <input type="number" name="claim_amount" step="0.01" required value="{{ claim_data.claim_amount|default:'' }}">
+
+            {# REMOVED PAID AMOUNT FIELD as per "Pure Network-Based Fraud Detection (No Paid Amount)" #}
+
+            <label for="num_visits">Number of Visits</label>
+            <input type="number" name="num_visits" required value="{{ claim_data.num_visits|default:'' }}">
+
+            <label for="hospitalized" class="checkbox-label">Hospitalized</label>
+            <input type="checkbox" name="hospitalized" {% if claim_data.hospitalized %}checked{% endif %}>
+            
+            <label for="days_admitted">Days Admitted</label>
+            <input type="number" name="days_admitted" required value="{{ claim_data.days_admitted|default:'' }}">
+
+            <label for="age">Age</label>
+            <input type="number" name="age" required value="{{ claim_data.age|default:'' }}">
+            
+            <label for="patient_gender">Patient Gender</label>
+            <select name="gender" required>
+                <option value="">Select</option>
+                <option value="M" {% if claim_data.gender == 'M' %}selected{% endif %}>Male</option>
+                <option value="F" {% if claim_data.gender == 'F' %}selected{% endif %}>Female</option>
+                <option value="Other" {% if claim_data.gender == 'Other' %}selected{% endif %}>Other</option>
+            </select>
+
+            <label for="procedure_code">Procedure Code</label>
+            <select name="procedure_code" required>
+                <option value="">Select</option>
+                <option value="PROC002" {% if claim_data.procedure_code == 'PROC002' %}selected{% endif %}>PROC002</option>
+                <option value="PROC003" {% if claim_data.procedure_code == 'PROC003' %}selected{% endif %}>PROC003</option>
+                <option value="PROC004" {% if claim_data.procedure_code == 'PROC004' %}selected{% endif %}>PROC004</option>
+                {# Add more options as needed, based on your data's procedure codes #}
+                <option value="PROC001" {% if claim_data.procedure_code == 'PROC001' %}selected{% endif %}>PROC001</option>
+                <option value="PROC005" {% if claim_data.procedure_code == 'PROC005' %}selected{% endif %}>PROC005</option>
+                <option value="PROC006" {% if claim_data.procedure_code == 'PROC006' %}selected{% endif %}>PROC006</option>
+                <option value="PROC007" {% if claim_data.procedure_code == 'PROC007' %}selected{% endif %}>PROC007</option>
+                <option value="PROC008" {% if claim_data.procedure_code == 'PROC008' %}selected{% endif %}>PROC008</option>
+                <option value="PROC009" {% if claim_data.procedure_code == 'PROC009' %}selected{% endif %}>PROC009</option>
+                <option value="PROC010" {% if claim_data.procedure_code == 'PROC010' %}selected{% endif %}>PROC010</option>
+                <option value="PROC011" {% if claim_data.procedure_code == 'PROC011' %}selected{% endif %}>PROC011</option>
+                <option value="PROC012" {% if claim_data.procedure_code == 'PROC012' %}selected{% endif %}>PROC012</option>
+                <option value="PROC013" {% if claim_data.procedure_code == 'PROC013' %}selected{% endif %}>PROC013</option>
+                <option value="PROC014" {% if claim_data.procedure_code == 'PROC014' %}selected{% endif %}>PROC014</option>
+                <option value="PROC015" {% if claim_data.procedure_code == 'PROC015' %}selected{% endif %}>PROC015</option>
+                <option value="PROC016" {% if claim_data.procedure_code == 'PROC016' %}selected{% endif %}>PROC016</option>
+                <option value="PROC017" {% if claim_data.procedure_code == 'PROC017' %}selected{% endif %}>PROC017</option>
+                <option value="PROC018" {% if claim_data.procedure_code == 'PROC018' %}selected{% endif %}>PROC018</option>
+                <option value="PROC019" {% if claim_data.procedure_code == 'PROC019' %}selected{% endif %}>PROC019</option>
+                <option value="PROC020" {% if claim_data.procedure_code == 'PROC020' %}selected{% endif %}>PROC020</option>
+            </select>
+
+            <label for="diagnosis_code">Diagnosis Code</label>
+            <select name="diagnosis_code" required>
+                <option value="">Select</option>
+                <option value="DIAG001" {% if claim_data.diagnosis_code == 'DIAG001' %}selected{% endif %}>DIAG001</option>
+                <option value="DIAG002" {% if claim_data.diagnosis_code == 'DIAG002' %}selected{% endif %}>DIAG002</option>
+                <option value="DIAG003" {% if claim_data.diagnosis_code == 'DIAG003' %}selected{% endif %}>DIAG003</option>
+                <option value="DIAG004" {% if claim_data.diagnosis_code == 'DIAG004' %}selected{% endif %}>DIAG004</option>
+                <option value="DIAG005" {% if claim_data.diagnosis_code == 'DIAG005' %}selected{% endif %}>DIAG005</option>
+                <option value="DIAG006" {% if claim_data.diagnosis_code == 'DIAG006' %}selected{% endif %}>DIAG006</option>
+                <option value="DIAG007" {% if claim_data.diagnosis_code == 'DIAG007' %}selected{% endif %}>DIAG007</option>
+                <option value="DIAG008" {% if claim_data.diagnosis_code == 'DIAG008' %}selected{% endif %}>DIAG008</option>
+                <option value="DIAG009" {% if claim_data.diagnosis_code == 'DIAG009' %}selected{% endif %}>DIAG009</option>
+                <option value="DIAG010" {% if claim_data.diagnosis_code == 'DIAG010' %}selected{% endif %}>DIAG010</option>
+                <option value="DIAG011" {% if claim_data.diagnosis_code == 'DIAG011' %}selected{% endif %}>DIAG011</option>
+                <option value="DIAG012" {% if claim_data.diagnosis_code == 'DIAG012' %}selected{% endif %}>DIAG012</option>
+                <option value="DIAG013" {% if claim_data.diagnosis_code == 'DIAG013' %}selected{% endif %}>DIAG013</option>
+                <option value="DIAG014" {% if claim_data.diagnosis_code == 'DIAG014' %}selected{% endif %}>DIAG014</option>
+                <option value="DIAG015" {% if claim_data.diagnosis_code == 'DIAG015' %}selected{% endif %}>DIAG015</option>
+                <option value="DIAG016" {% if claim_data.diagnosis_code == 'DIAG016' %}selected{% endif %}>DIAG016</option>
+                <option value="DIAG017" {% if claim_data.diagnosis_code == 'DIAG017' %}selected{% endif %}>DIAG017</option>
+                <option value="DIAG018" {% if claim_data.diagnosis_code == 'DIAG018' %}selected{% endif %}>DIAG018</option>
+                <option value="DIAG019" {% if claim_data.diagnosis_code == 'DIAG019' %}selected{% endif %}>DIAG019</option>
+                <option value="DIAG020" {% if claim_data.diagnosis_code == 'DIAG020' %}selected{% endif %}>DIAG020</option>
+            </select>
+
+            <button type="submit">Submit Claim</button>
+        </form>
+    </main>
+
+    <footer>
+        <p><strong>Fraud Auditor</strong> – A Visual Analytics Tool for Detecting Collusive Fraud in Health Insurance</p>
+        <p>Developed by Team 11 | Contact: <a href="mailto:support@fraudauditor.com">support@fraudauditor.com</a></p>
+        <p>&copy; 2025 Fraud Auditor. All rights reserved.</p>
+    </footer>
+</div>
+</body>
+</html>

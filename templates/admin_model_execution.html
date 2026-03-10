@@ -1,0 +1,273 @@
+{# admin_model_execution.html #}
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin - Model Execution & Community Detection</title>
+    <style>
+        /* General Body and Container Styles (copied for consistency) */
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f7f6;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            flex-grow: 1;
+        }
+
+        /* Header Styles (copied for consistency) */
+        .header {
+            background-color: #2c3e50;
+            color: white;
+            padding: 15px 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+
+        .header h1 {
+            margin: 0;
+            font-size: 24px;
+            font-weight: bold;
+            color: white;
+        }
+
+        .header a {
+            color: white;
+            text-decoration: none;
+            font-size: 16px;
+            padding: 8px 15px;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+
+        .header a:hover {
+            background-color: #34495e;
+        }
+
+        /* Main Content Styling */
+        h2 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .model-results-container {
+            padding: 20px;
+            background-color: #f9f9f9;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            margin-top: 20px;
+            
+            /* --- MODIFIED SIZE & ALIGNMENT HERE --- */
+            /* Removed max-width and auto margins to let it fill its parent */
+            /* min-height: 250px; will ensure a minimum vertical presence */
+            min-height: 250px; /* Adjust this value as needed (e.g., 200px, 300px) */
+            
+            /* Use flexbox to center content vertically/horizontally if it's short */
+            display: flex;
+            flex-direction: column;
+            justify-content: center; /* Centers content vertically */
+            align-items: center; /* Centers content horizontally (block level items will stretch) */
+            text-align: center; /* Default text alignment for the container */
+        }
+
+        /* Re-align specific elements inside the container to left */
+        .model-results-container h3,
+        .model-results-container h4,
+        .model-results-container p,
+        .model-results-container ul {
+            text-align: left; /* Ensure text within these elements is left-aligned */
+            width: 100%; /* Ensure these take full available width inside the flex container */
+        }
+
+        .model-results-container p strong {
+            color: #2c3e50;
+        }
+
+        .suspicious-list {
+            list-style-type: none;
+            padding: 0;
+            margin-top: 15px;
+            text-align: left; /* Explicitly set to left for the list itself */
+        }
+        .suspicious-list li {
+            margin-bottom: 8px;
+            background-color: #ffe0e0; /* Light red background for suspicious items */
+            padding: 10px 15px;
+            border-left: 5px solid #e74c3c; /* Red left border */
+            border-radius: 4px;
+            font-size: 15px;
+        }
+
+        /* Messages Styling (copied for consistency) */
+        .message-success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+            padding: 10px;
+            margin-bottom: 15px;
+            border-radius: 5px;
+            text-align: center;
+        }
+        .message-error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+            padding: 10px;
+            margin-bottom: 15px;
+            border-radius: 5px;
+            text-align: center;
+        }
+        .message-info {
+            background-color: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+            padding: 10px;
+            margin-bottom: 15px;
+            border-radius: 5px;
+            text-align: center;
+        }
+
+        /* Footer Styles (copied for consistency) */
+        footer {
+            background-color: #e0e0e0;
+            color: #333;
+            padding: 20px 0;
+            text-align: center;
+            margin-top: 50px;
+            border-top: 1px solid #dcdcdc;
+        }
+
+        footer p {
+            margin: 5px 0;
+            font-size: 14px;
+        }
+
+        footer a {
+            color: #007bff;
+            text-decoration: none;
+        }
+
+        footer a:hover {
+            text-decoration: underline;
+        }
+
+        /* Button style */
+        .btn {
+            display: inline-block;
+            background-color: #007bff;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            text-decoration: none;
+            transition: background-color 0.3s ease;
+            margin-top: 15px;
+        }
+
+        .btn:hover {
+            background-color: #0056b3;
+        }
+
+        .action-form {
+            text-align: center;
+            margin-top: 30px;
+        }
+        .action-form button {
+            background-color: #28a745; /* Green for action button */
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 5px;
+            font-size: 18px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        .action-form button:hover {
+            background-color: #218838;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <h1>Admin Panel - Model Execution</h1>
+        <a href="{% url 'admin_home' %}">Home</a>
+    </div>
+
+    <div class="container">
+        <h2>Fraud Detection Model Execution</h2>
+
+        {% if messages %}
+            {% for message in messages %}
+                <p class="{% if message.tags == 'success' %}message-success{% elif message.tags == 'error' %}message-error{% else %}message-info{% endif %}">
+                    {{ message }}
+                </p>
+            {% endfor %}
+        {% endif %}
+
+        <div class="action-form">
+            <p>Click the button below to run the fraud detection model and identify suspicious communities.</p>
+            <form method="post" action="{% url 'admin_model_execution' %}">
+                {% csrf_token %}
+                <button type="submit">Run Fraud Detection Model</button>
+            </form>
+        </div>
+
+        {% if num_communities is not None %} {# Check if results exist #}
+            <div class="model-results-container">
+                <h3>Model Execution Results:</h3>
+
+                {% if suspicious_communities %}
+    
+                    <p><strong>Number of suspicious communities:</strong> {{ num_suspicious }}</p>
+                    {% if num_suspicious > 0 %}
+                        <ul class="suspicious-list">
+                            {% for community in suspicious_communities %}
+                                <li>Community Size: {{ community|length }} | Patients: {{ community|join:", " }}</li>
+                            {% endfor %}
+                        </ul>
+                    {% else %}
+                        <p>No suspicious communities found based on the current threshold ({{ settings.FRAUD_COMMUNITY_SIZE_THRESHOLD }}).</p>
+                    {% endif %}
+                {% else %}
+                    <p>No suspicious communities data available. Please run the model.</p>
+                {% endif %}
+            </div>
+            
+            <p style="text-align: center; margin-top: 30px;">
+                <a class="btn" href="{% url 'admin_covisit_network' %}">View Covisit Network Visualization</a>
+            </p>
+
+        {% else %}
+            <p style="text-align: center; margin-top: 20px;">No model results available yet. Click 'Run Fraud Detection Model' above.</p>
+        {% endif %}
+
+        {% if error %}
+            <p class="message-error" style="text-align: center; margin-top: 20px;">Error: {{ error }}</p>
+        {% endif %}
+
+    </div>
+
+    <footer id="footer">
+        <p><strong>Fraud Auditor</strong> – A Visual Analytics Tool for Detecting Collusive Fraud in Health Insurance</p>
+        <p>Developed by Team 11 | Contact: <a href="mailto:support@fraudauditor.com">support@fraudauditor.com</a></p>
+        <p>&copy; 2025 Fraud Auditor. All rights reserved.</p>
+    </footer>
+
+</body>
+</html>

@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin Dashboard - Fraud Auditor</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', sans-serif;
+            background-color: #f0f2f5;
+        }
+
+        #header {
+            background-color: #3e7a91; /* Consistent theme color */
+            color: white;
+            padding: 15px 40px;
+            font-size: 22px;
+            font-weight: bold;
+            border-bottom: 3px solid #2c3e50;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0px 4px 8px rgba(0,0,0,0.1); /* Subtle shadow for depth */
+        }
+
+        #header .logout a {
+            color: white;
+            font-weight: bold;
+            text-decoration: none;
+            font-size: 18px;
+        }
+
+        #header .logout a:hover {
+            text-decoration: underline; /* Keep the hover effect */
+        }
+
+        main {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 80px;
+        }
+
+        h2 {
+            color: #2c3e50;
+            margin-bottom: 30px;
+        }
+
+        .admin-panel {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .card {
+            background-color: white;
+            border-radius: 10px;
+            width: 250px;
+            margin: 15px;
+            padding: 30px;
+            text-align: center;
+            box-shadow: 0 0 8px rgba(0,0,0,0.15);
+            transition: transform 0.2s ease, box-shadow 0.2s ease; /* Added transition */
+        }
+        .card:hover { /* Added hover effect */
+            transform: translateY(-5px);
+            box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+        }
+
+        .card a {
+            text-decoration: none;
+            color: #003366;
+            font-weight: bold;
+            display: inline-block;
+            padding: 10px; /* Adds spacing to separate text */
+        }
+
+        footer {
+            position:relative; /* Changed to relative as min-height 100vh on content-wrapper handles sticky footer */
+            bottom: 0;
+            width: 100%;
+            background-color: #2c3e50;
+            color: white;
+            text-align: center;
+            padding: 10px;
+        }
+
+        footer a {
+            color: #00ffee;
+            text-decoration: none;
+        }
+
+        footer a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+
+<header id="header">
+    <span>Admin Dashboard - Fraud Auditor</span>
+    <div class="logout">
+        <a href="{% url 'admin_logout' %}">Logout</a>
+    </div>
+</header>
+
+<main>
+    <h2>Welcome, Admin</h2>
+    <div class="admin-panel">
+        <div class="card">
+            <a href="{% url 'admin_manage_users' %}">Manage Users</a>
+        </div>
+
+        <div class="card">
+            <a href="{% url 'admin_claim_list' %}">View Claims & Run Fraud Detection</a>
+        </div>
+
+        <div class="card">
+            <a href="{% url 'admin_covisit_network' %}">Covisit Network Visualization</a>
+        </div>
+
+        <div class="card">
+            <a href="{% url 'admin_model_execution' %}">Community Detection Results</a>
+        </div>
+    </div>
+</main>
+
+<footer id="footer">
+    <p><strong>Fraud Auditor</strong> – A Visual Analytics Tool for Detecting Collusive Fraud in Health Insurance</p>
+    <p>&copy; 2025 Fraud Auditor. All rights reserved.</p>
+</footer>
+
+</body>
+</html>

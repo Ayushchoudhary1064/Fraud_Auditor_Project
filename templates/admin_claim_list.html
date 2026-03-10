@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin - View Claims</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #eef2f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        .header {
+            background-color: #003366;
+            color: white;
+            padding: 20px;
+            text-align: center;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header a {
+            color: white;
+            text-decoration: none;
+            font-size: 18px;
+        }
+
+        .header a:hover {
+            text-decoration: underline;
+        }
+
+        .container {
+            padding: 30px;
+            overflow-x: auto; /* Added for horizontal scrolling on small screens */
+        }
+
+        h2 {
+            text-align: center;
+            color: #003366;
+            margin-bottom: 20px; /* Added margin for spacing */
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 30px;
+            background-color: white;
+        }
+
+        th, td {
+            padding: 10px;
+            border: 1px solid #ccc;
+            text-align: center;
+            vertical-align: middle; /* Changed to middle for general alignment */
+        }
+
+        th {
+            background-color: #003366;
+            color: white;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+        .btn {
+            padding: 8px 12px;
+            background-color: #0066cc;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s ease; /* Smooth transition */
+        }
+
+        .btn:hover {
+            background-color: #004080;
+        }
+
+        .status-accepted {
+            color: green;
+            font-weight: bold;
+        }
+
+        .status-rejected {
+            color: red;
+            font-weight: bold;
+        }
+
+        .status-pending {
+            color: orange;
+            font-weight: bold;
+        }
+        .status-error-during-assessment { /* Adjusted class name to be valid CSS */
+            color: purple;
+            font-weight: bold;
+        }
+        
+        /* Message styling */
+        .message-success {
+            color: green;
+            background-color: #d4edda;
+            border: 1px solid #c3e6cb;
+            padding: 10px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+            text-align: center;
+        }
+        .message-error {
+            color: red;
+            background-color: #f8d7da;
+            border: 1px solid #f5c6cb;
+            padding: 10px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+            text-align: center;
+        }
+
+
+        footer {
+            text-align: center;
+            padding: 15px;
+            background-color: #003366;
+            color: white;
+            margin-top: 40px;
+        }
+
+        footer a {
+            color: #f1c40f;
+            text-decoration: none;
+        }
+
+        footer a:hover {
+            text-decoration: underline;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <h1>Admin Panel - View Claims & Detect Fraud</h1>
+        <a href="{% url 'admin_home' %}">Home</a>
+    </div>
+
+    <div class="container">
+        <h2>Submitted Claims</h2>
+
+        {% if messages %}
+            {% for message in messages %}
+                <p class="{% if message.tags == 'success' %}message-success{% elif message.tags == 'error' %}message-error{% else %}message-info{% endif %}">
+                    {{ message }}
+                </p>
+            {% endfor %}
+        {% endif %}
+
+        {% if claims %}
+        <table>
+            <thead>
+                <tr>
+                    <th>Submitted By</th>
+                    <th>Claim ID</th>
+                    <th>Patient ID</th>
+                    <th>Provider ID</th>
+                    <th>Claim Amount</th>
+                    <th>Submitted At</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for claim in claims %}
+                <tr>
+                    <td>{{ claim.user.username }}</td>
+                    <td>{{ claim.claim_id }}</td>
+                    <td>{{ claim.patient_id }}</td>
+                    <td>{{ claim.provider_id }}</td>
+                    <td>&#x20B9;{{ claim.claim_amount }}</td>
+                    <td>{{ claim.submitted_at|date:"Y-m-d H:i" }}</td>
+                    <td class="status-{{ claim.status|lower|cut:' ' }}">
+                        {{ claim.status }}
+                    </td>
+                    <td>
+                        <form method="post" action="{% url 'assess_claim_status' claim.id %}">
+                            {% csrf_token %}
+                            <button class="btn" type="submit">Assess Fraud</button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <p style="text-align: center; margin-top: 20px;">No claims have been submitted yet.</p>
+        {% endif %}
+    </div>
+
+    <footer id="footer">
+        <p><strong>Fraud Auditor</strong> – A Visual Analytics Tool for Detecting Collusive Fraud in Health Insurance</p>
+        <p>Developed by Team 11 | Contact: <a href="mailto:support@fraudauditor.com">support@fraudauditor.com</a></p>
+        <p>&copy; 2025 Fraud Auditor. All rights reserved.</p>
+    </footer>
+
+</body>
+</html>

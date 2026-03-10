@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+   <meta charset="UTF-8">
+   <title>Welcome - Fraud Auditor</title>
+   <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css">
+   <style>
+      @import url('https://fonts.googleapis.com/css?family=Noto+Sans+TC&display=swap');
+
+      body {
+         margin: 0;
+         padding: 0;
+         background-color: #f4f4f4;
+         font-family: 'Noto Sans TC', sans-serif;
+         display: flex;
+         flex-direction: column;
+         min-height: 100vh;
+      }
+
+      #header {
+         background-color: #3e7a91;
+         color: white;
+         padding: 20px;
+         text-align: center;
+         font-size: 28px;
+         font-weight: bold;
+         border-bottom: 2px solid #2c3e50;
+      }
+
+      main {
+         flex: 1;
+         display: flex;
+         justify-content: center;
+         align-items: center;
+         padding: 40px 20px;
+         text-align: center;
+      }
+
+      .login-options p {
+    font-size: 15px;
+    color: #333;
+    margin: 10px 0;
+    text-align: justify; /* Added alignment */
+}
+
+
+      .login-options h2 {
+         color: #3e7a91;
+         margin-bottom: 15px;
+      }
+
+      .login-options p {
+         font-size: 15px;
+         color: #333;
+         margin: 10px 0;
+      }
+
+      .login-options a {
+    display: inline-block;
+    margin: 10px 5px;
+    padding: 16px 10px;
+    background-color: #3e7a91;
+    color: white;
+    text-decoration: none;
+    font-size: 14px;
+    border-radius: 8px;
+    transition: 0.3s;
+}
+
+
+
+      .login-options a:hover {
+         background-color: #2c3e50;
+      }
+
+      #footer {
+         background-color: #2c3e50;
+         color: white;
+         text-align: center;
+         padding: 15px;
+         font-size: 14px;
+         border-top: 2px solid #3e7a91;
+      }
+
+      #footer a {
+         color: #fff;
+         text-decoration: underline;
+      }
+
+      #footer a:hover {
+         color: #00ffee;
+      }
+   </style>
+</head>
+<body>
+
+   <header id="header">Fraud Auditor</header>
+
+   <main>
+      <section class="login-options">
+         <h2>FRAUD AUDITOR: A Visual Analytics Approach for Collusive Fraud in Health Insurance</h2>
+         <p>This project aims to detect collusive fraud among health insurance claims using co-visit networks and weighted community detection.</p>
+         <p>Users can submit claims while the admin evaluates them using visual insights and analytics.</p>
+         <p>The system enhances transparency and automates fraud identification to assist insurers in decision-making.</p>
+
+         <a href="{% url 'login' %}">Login as User</a>
+         <a href="{% url 'admin_login' %}">Login as Admin</a>
+
+
+      </section>
+   </main>
+
+   <footer id="footer">
+      <p><strong>Fraud Auditor</strong> – A Visual Analytics Tool for Detecting Collusive Fraud in Health Insurance</p>
+      <p>Developed by Team 11 | Contact: <a href="mailto:support@fraudauditor.com">support@fraudauditor.com</a></p>
+      <p>&copy; 2025 Fraud Auditor. All rights reserved.</p>
+   </footer>
+
+</body>
+</html>

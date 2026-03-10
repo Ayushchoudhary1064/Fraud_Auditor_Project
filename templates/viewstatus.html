@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+{# REMOVED: {% load my_filters %} #}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Claim Status - Fraud Auditor</title>
+    <style>
+        /* Your existing CSS unchanged */
+        body { margin: 0; font-family: 'Segoe UI', sans-serif; background-color: #f0f2f5; }
+        header { background-color: #3e7a91; padding: 20px; color: white; display: flex; justify-content: space-between; align-items: center; }
+        header h1 { font-size: 24px; margin: 0; }
+        nav a { color: white; margin-left: 20px; font-size: 14px; text-decoration: none; font-weight: 500; }
+        nav a:hover { text-decoration: underline; color: #00ffee; }
+        .content-wrapper { min-height: 100vh; display: flex; flex-direction: column; }
+        main { flex: 1; padding: 40px 20px 60px; display: flex; flex-direction: column; align-items: center; }
+        /* .status-box, .history-box are now replaced by .latest-claim-status-box and general table styling */
+        .status { font-size: 22px; font-weight: bold; margin-top: 20px; }
+
+        /* REVERTED: Simple text colors for table status */
+        .accepted { color: green; }
+        .rejected { color: red; } /* Changed to red for rejected */
+        .pending { color: orange; }
+        .error-status { color: purple; } /* For cases like 'Error during assessment' */
+
+        h2 { color: #2c3e50; margin-bottom: 20px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+        th, td { border: 1px solid #ddd; padding: 10px; text-align: center; }
+        th { background-color: #3e7a91; color: white; }
+        tr:nth-child(even) { background-color: #f9f9f9; }
+        footer { background-color: #2c3e50; color: white; text-align: center; padding: 12px; width: 100%; }
+        footer a { color: #00ffee; }
+
+        /* New styles for fraud notes */
+        .fraud-notes {
+            margin-top: 15px;
+            padding: 15px;
+            background-color: #e9f5ff;
+            border-left: 4px solid #3e7a91;
+            max-width: 800px;
+            width: 100%;
+            font-size: 16px;
+            white-space: pre-wrap; /* Preserve line breaks in notes */
+        }
+
+        /* NEW CSS for Latest Claim Status Box (UNCHANGED from last update) */
+        .latest-claim-status-box {
+            background-color: #ffffff;
+            padding: 25px 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            max-width: 800px;
+            width: 100%;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .latest-claim-status-box p {
+            margin: 0 0 10px 0;
+            font-size: 18px;
+            color: #333;
+        }
+
+        .latest-claim-status-box strong {
+            font-size: 20px;
+            color: #2c3e50;
+        }
+
+        .latest-claim-status-box .status-display {
+            font-size: 28px;
+            font-weight: bold;
+            padding: 10px 20px;
+            border-radius: 8px;
+            display: inline-block;
+            margin-top: 15px;
+            background-color: #f0f0f0;
+            color: #333;
+        }
+
+        /* Background colors for the status display (UNCHANGED from last update) */
+        .latest-claim-status-box .status-display.status-accepted {
+            background-color: #e6ffe6; /* Light green */
+            color: green;
+        }
+        .latest-claim-status-box .status-display.status-rejected {
+            background-color: #ffe6e6; /* Light red, but text will be green */
+            color: green; /* As per your request, rejected text is green */
+        }
+        .latest-claim-status-box .status-display.status-pending {
+            background-color: #fffacd; /* LemonChiffon for a lighter yellow */
+            color: orange; /* Retaining orange, change to yellow if needed */
+        }
+        .latest-claim-status-box .status-display.status-error-during-assessment {
+            background-color: #f0e6ff; /* Light purple */
+            color: purple;
+        }
+
+    </style>
+</head>
+<body>
+<header>
+    <h1>Fraud Auditor</h1>
+    <nav>
+        <a href="{% url 'home' %}">Home</a>
+        <a href="{% url 'submit_claim' %}">Submit New Claim</a>
+        <a href="{% url 'view_user_profile' %}">Profile</a>
+        <a href="{% url 'logout' %}">Logout</a>
+    </nav>
+</header>
+
+<div class="content-wrapper">
+    <main>
+        <h2>Your Claims History</h2>
+
+        {# NEW SECTION: Display the status of the most recent claim #}
+        {% if latest_claim %}
+        <div class="latest-claim-status-box">
+            <p>Your **Most Recent Claim ID: {{ latest_claim.claim_id }}) Status:</p>
+            {# REVERTED FILTER: Using cut:' ' #}
+            <div class="status-display status-{{ latest_claim.status|lower|cut:' ' }}">
+                {{ latest_claim.status }}
+            </div>
+        </div>
+        {% endif %}
+        {# END NEW SECTION #}
+
+        {% if claims %}
+        <table>
+            <thead>
+                <tr>
+                    <th>Claim ID</th>
+                    <th>Submitted At</th>
+                    <th>Claim Amount</th>
+                    <th>Patient ID</th>         {# KEPT COLUMN #}
+                    <th>Provider ID</th>        {# KEPT COLUMN #}
+                    <th>Procedure Code</th>     {# KEPT COLUMN #}
+                    <th>Diagnosis Code</th>     {# KEPT COLUMN #}
+            {# KEPT COLUMN #}
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for claim in claims %}
+                <tr>
+                    <td>{{ claim.claim_id }}</td>
+                    <td>{{ claim.submitted_at|date:"Y-m-d H:i" }}</td>
+                    <td>&#x20B9;{{ claim.claim_amount }}</td>
+                    <td>{{ claim.patient_id }}</td>     {# KEPT DATA CELL #}
+                    <td>{{ claim.provider_id }}</td>    {# KEPT DATA CELL #}
+                    <td>{{ claim.procedure_code }}</td> {# KEPT DATA CELL #}
+                    <td>{{ claim.diagnosis_code }}</td> {# KEPT DATA CELL #}
+                    {# REVERTED FILTER: Using cut:' ' and direct status class #}
+                    <td class="{{ claim.status|lower|cut:' ' }}">
+                        {{ claim.status }}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <p>No claims found in your history.</p>
+        {% endif %}
+    </main>
+
+    <footer>
+        <p><strong>Fraud Auditor</strong> – A Visual Analytics Tool for Detecting Collusive Fraud in Health Insurance</p>
+        <p>Developed by Team 11 | Contact: <a href="mailto:support@fraudauditor.com">support@fraudauditor.com</a></p>
+        <p>&copy; 2025 Fraud Auditor. All rights reserved.</p>
+    </footer>
+</div>
+</body>
+</html>

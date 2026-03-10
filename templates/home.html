@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard - Fraud Auditor</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', sans-serif;
+            background-color: #f0f2f5;
+        }
+
+        #header {
+            background-color: #3e7a91;
+            color: white;
+            padding: 20px;
+            font-size: 24px;
+            font-weight: bold;
+            border-bottom: 2px solid #2c3e50;
+        }
+
+        #header .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        #header nav a {
+            color: white;
+            margin-left: 20px;
+            font-size: 14px;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        #header nav a:hover {
+            text-decoration: underline;
+            color: #00ffee;
+        }
+
+        main {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 80px;
+        }
+
+        h2 {
+            color: #2c3e50;
+            margin-bottom: 30px;
+        }
+
+        .btn {
+            background-color: #3e7a91;
+            color: white;
+            padding: 15px 25px;
+            border: none;
+            border-radius: 8px;
+            text-decoration: none;
+            font-size: 18px;
+            transition: background-color 0.3s;
+        }
+
+        .btn:hover {
+            background-color: #2c3e50;
+        }
+
+        footer {
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            background-color: #2c3e50;
+            color: white;
+            text-align: center;
+            padding: 10px;
+        }
+    </style>
+</head>
+<body>
+
+<header id="header">
+    <div class="container">
+        <span>{{ user.username }} Dashboard</span>
+        <nav>
+            <a href="{% url 'view_status' %}">View Status</a>
+            <a href="{% url 'view_user_profile' %}">Profile</a>
+            <a href="{% url 'logout' %}">Logout</a>
+        </nav>
+    </div>
+</header>
+
+<main>
+    <h2>Welcome to the Fraud Auditor System</h2>
+    <a href="{% url 'submit_claim' %}" class="btn">Submit New Claim</a>
+</main>
+
+<footer id="footer">
+    <p><strong>Fraud Auditor</strong> – A Visual Analytics Tool for Detecting Collusive Fraud in Health Insurance</p>
+    <p>Developed by Team 11 | Contact: <a href="mailto:support@fraudauditor.com">support@fraudauditor.com</a></p>
+    <p>&copy; 2025 Fraud Auditor. All rights reserved.</p>
+</footer>
+
+</body>
+</html>
