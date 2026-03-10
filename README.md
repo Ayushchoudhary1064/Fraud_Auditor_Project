@@ -158,3 +158,15 @@ http://127.0.0.1:8000
 * Graph neural networks for fraud detection
 * Real-time claim monitoring
 * Advanced fraud visualization tools
+
+---
+
+## 🔑 Demo Access
+To explore the administrative fraud analytics dashboard without setting up a new account, use the following credentials:
+
+* **Role:** Site Administrator / Fraud Auditor
+* **Username:** `admin`
+* **Password:** `root`
+
+> **Note:** These credentials are for the Replit/Development environment only.
+---
