@@ -93,4 +93,23 @@ Database (SQLite)
 
 # Setup & Running the Project
 
-### Install dependencies
+### Clone the repository
+git clone https://github.com/Ayushchoudhary1064/Fraud_Auditor_Project.git
+cd Fraud_Auditor_Project
+**Create virtual environment**
+python -m venv fraud-env
+ **Activate virtual environment (Windows)**
+fraud-env\Scripts\activate
+**Install dependencies**
+pip install -r requirements.txt
+**Run the server**
+python manage.py runserver
+**Open in browser**
+http://127.0.0.1:8000
+**Future Improvements**
+
+Graph neural networks for fraud detection
+
+Real-time claim monitoring
+
+Advanced fraud visualization tools
